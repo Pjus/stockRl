@@ -1,0 +1,53 @@
+<html>
+  <head>
+    <title>Stock</title>
+
+    <link rel="stylesheet" href="{{ url_for('static', filename = 'main.css') }}">
+
+    <!-- <script src="/static/js/test.js"></script> -->
+    <script src="https://cdn.amcharts.com/lib/4/core.js"></script>
+    <script src="https://cdn.amcharts.com/lib/4/charts.js"></script>
+    <script src="https://cdn.amcharts.com/lib/4/plugins/rangeSelector.js"></script>
+    <script src="https://cdn.amcharts.com/lib/4/themes/animated.js"></script>
+    <!-- <script>
+        window.onload=function(){
+            search_stock()
+        }
+    </script> -->
+
+  </head>
+  
+  <body>
+    <!-- <script src="/static/js/stock_chart.js"></script> -->
+    <script src="{{ url_for('static', filename = 'final.js') }}"></script>
+
+    <form method="GET" action="/calculate">
+
+        <span class='green_window'>
+        <input type='text' name="ticker" id="ticker" class='input_text' onkeydown="enterkey()"/>
+        </span>
+        <button type='submit' class='sch_smit', onclick="search_stock()">검색</button>
+
+        <div id="controls"></div>
+
+        <div id="chartdiv" style="height: 450px; width: 100%;"></div>
+        
+    </form>
+    <div>
+        <p id="tic">
+            {% if num == None %}
+                <h5> 아직 아무 값도 입력이 안되었습니다. </h5>
+            {% else %}
+                {{num}}
+            {% endif %}
+        </p>
+    </div>
+    <script>
+        var tic = '{{num}}';
+        search_stock(tic);
+    </script>
+
+
+  </body>
+</html>
+
