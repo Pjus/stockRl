@@ -28,7 +28,7 @@ import pandas as pd
 ###########################################################
 app = Flask(__name__, static_url_path='/static')
 app.config['SEND_FILE_MAX_AGE_DEFAULT'] = 0
-app.config.from_object('satcounter_config')
+# app.config.from_object('satcounter_config')
 
 api = Api(app)
 
