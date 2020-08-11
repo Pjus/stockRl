@@ -21,7 +21,7 @@
     <!-- <script src="/static/js/stock_chart.js"></script> -->
     <script src="{{ url_for('static', filename = 'final.js') }}"></script>
 
-    <form method="GET" action="/calculate">
+    <form method="GET" action="/getAction">
 
         <span class='green_window'>
         <input type='text' name="ticker" id="ticker" class='input_text' onkeydown="enterkey()"/>
@@ -35,15 +35,16 @@
     </form>
     <div>
         <p id="tic">
-            {% if num == None %}
-                <h5> 아직 아무 값도 입력이 안되었습니다. </h5>
+            {% if stockCode == None %}
             {% else %}
-                {{num}}
+                {{stockCode}}
+                {{date}}
+                {{trade}}
             {% endif %}
         </p>
     </div>
     <script>
-        var tic = '{{num}}';
+        var tic = '{{stockCode}}';
         search_stock(tic);
     </script>
 
