@@ -9,7 +9,7 @@ import pandas as pd
 import joblib
 import itertools
 
-model = PPO2.load("./model/stock_RL")
+model = PPO2.load("./model/stock_RL2")
 
 ticker = 'AAPL'
 start_date = '2018-01-01'
@@ -19,9 +19,6 @@ df['Date'] = df.index
 df.index = range(len(df))
 df = df.sort_values('Date')
 df['Date'] = df['Date'].astype('str')
-df = df.tail(1)
-df.index = range(len(df))
-print(df)
 
 # The algorithms require a vectorized environment to run
 env = DummyVecEnv([lambda: StockTradingEnv(df)])

@@ -142,7 +142,6 @@ class StockTradingEnv(gym.Env):
 
         obs = self._next_observation()
 
-        
         trade = self.trades
         if len(trade) > 0:
             tra = trade[-1]['type']
@@ -151,9 +150,9 @@ class StockTradingEnv(gym.Env):
             tra = None
             date = None
 
-        bal = self.balance
+        net = self.net_worth
 
-        return obs, reward, done, {date, tra, bal}
+        return obs, reward, done, {"date" : date, "trade" : tra, 'Net_worth' : net}
 
     def reset(self):
         # Reset the state of the environment to an initial state

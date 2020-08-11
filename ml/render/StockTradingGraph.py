@@ -139,12 +139,12 @@ class StockTradingGraph:
                 high = self.df['High'].values[trade['step']]
                 low = self.df['Low'].values[trade['step']]
 
-                if trade['type'] == 'buy':
+                if trade['type'] == 'Buy':
                     high_low = low
                     color = UP_TEXT_COLOR
                     # print(date, trade['type'])
                 
-                elif trade['type'] == 'sell':
+                elif trade['type'] == 'Sell':
                     high_low = high
                     color = DOWN_TEXT_COLOR
                     # print(date, trade['type'])

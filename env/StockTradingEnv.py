@@ -101,11 +101,11 @@ class StockTradingEnv(gym.Env):
             if shares_bought > 0:
                 self.trades.append({'step': self.current_step,
                                     'shares': shares_bought, 'total': additional_cost,
-                                    'type': "buy"})
+                                    'type': "Buy"})
             else:
                 self.trades.append({'step': self.current_step,
                                     'shares': 0, 'total': 0,
-                                    'type': "hold"})
+                                    'type': "Hold"})
 
         elif action_type < 2:
             # Sell amount % of shares held
@@ -118,7 +118,7 @@ class StockTradingEnv(gym.Env):
             if shares_sold > 0:
                 self.trades.append({'step': self.current_step,
                                     'shares': shares_sold, 'total': shares_sold * current_price,
-                                    'type': "sell"})
+                                    'type': "Sell"})
 
         self.net_worth = self.balance + self.shares_held * current_price
 
