@@ -55,7 +55,7 @@ class StockTradingEnv(gym.Env):
 
     def _next_observation(self):
 
-        frame = np.zeros((11,10))
+        frame = np.zeros((len(self.df.columns) + 4, LOOKBACK_WINDOW_SIZE))
 
         opendeq = deque(maxlen=LOOKBACK_WINDOW_SIZE)
         highdeq = deque(maxlen=LOOKBACK_WINDOW_SIZE)
@@ -81,7 +81,7 @@ class StockTradingEnv(gym.Env):
         costdeq.append(self.cost_basis / MAX_SHARE_PRICE)
         totaldeq.append(self.total_sales_value / (MAX_NUM_SHARES * MAX_SHARE_PRICE))
 
-        if self.current_step > 10:
+        if self.current_step > LOOKBACK_WINDOW_SIZE:
             obs = np.array([opendeq, highdeq, lowdeq, closedeq, ajdeq, voldeq, bladeq, netdeq, shadeq, costdeq, totaldeq])
             return obs
         return frame
