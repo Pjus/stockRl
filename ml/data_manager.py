@@ -1,7 +1,7 @@
 import pandas as pd
 import numpy as np
 import pandas_datareader as pdr
-import ml.indicator
+import ml.indicator as indicator
 import datetime
 
 now = datetime.datetime.now()
@@ -19,7 +19,7 @@ def load_data(ticker, start_date, end_date=nowDate):
     return data
 
 def preprocess(data, ver='v1'):
-    windows = [5, 10, 20, 60, 120]
+    windows = [10]
     data = indicator.faster_OBV(data)
     data['log_OBV'] = np.log(data['OBV'])
 

@@ -38,7 +38,7 @@ class StockTradingEnv(gym.Env):
 
         # Prices contains the OHCL values for the last five prices
         self.observation_space = spaces.Box(
-            low=0, high=1, shape=(len(self.df.columns) + 4, LOOKBACK_WINDOW_SIZE), dtype=np.float16)
+            low=0, high=1, shape=(len(self.df.columns) + 2, LOOKBACK_WINDOW_SIZE), dtype=np.float16)
 
     def _adjust_prices(self, df):
         adjust_ratio = df['Adj Close'] / df['Close']
@@ -52,7 +52,7 @@ class StockTradingEnv(gym.Env):
 
     def _next_observation(self):
 
-        frame = np.zeros((len(self.df.columns) + 4, LOOKBACK_WINDOW_SIZE))
+        frame = np.zeros((len(self.df.columns) + 2, LOOKBACK_WINDOW_SIZE))
 
         opendeq = deque(maxlen=LOOKBACK_WINDOW_SIZE)
         highdeq = deque(maxlen=LOOKBACK_WINDOW_SIZE)
@@ -61,6 +61,31 @@ class StockTradingEnv(gym.Env):
         ajdeq = deque(maxlen=LOOKBACK_WINDOW_SIZE)
         voldeq = deque(maxlen=LOOKBACK_WINDOW_SIZE)
 
+        # indicator deque
+
+        log_OBV = deque(maxlen=LOOKBACK_WINDOW_SIZE)
+        close_ma10 = deque(maxlen=LOOKBACK_WINDOW_SIZE)
+        volume_ma10 = deque(maxlen=LOOKBACK_WINDOW_SIZE)
+        close_ma10_ratio = deque(maxlen=LOOKBACK_WINDOW_SIZE)
+        volume_ma10_ratio = deque(maxlen=LOOKBACK_WINDOW_SIZE)
+        PDI_10 = deque(maxlen=LOOKBACK_WINDOW_SIZE)
+        MDI_10 = deque(maxlen=LOOKBACK_WINDOW_SIZE)
+        ADX_10 = deque(maxlen=LOOKBACK_WINDOW_SIZE)
+        MDI_ADX_ratio10 = deque(maxlen=LOOKBACK_WINDOW_SIZE)
+        PDI_ADX_ratio10 = deque(maxlen=LOOKBACK_WINDOW_SIZE)
+        Bol_upper_10 = deque(maxlen=LOOKBACK_WINDOW_SIZE)
+        Bol_lower_10 = deque(maxlen=LOOKBACK_WINDOW_SIZE)
+        Bol_upper_close_ratio10 = deque(maxlen=LOOKBACK_WINDOW_SIZE)
+        Bol_lower_close_ratio10 = deque(maxlen=LOOKBACK_WINDOW_SIZE)
+        RSI_MACD_10 = deque(maxlen=LOOKBACK_WINDOW_SIZE)
+        CCI_10 = deque(maxlen=LOOKBACK_WINDOW_SIZE)
+        EVM_10 = deque(maxlen=LOOKBACK_WINDOW_SIZE)
+        EWMA_10 = deque(maxlen=LOOKBACK_WINDOW_SIZE)
+        EWMA_SMA_ratio10 = deque(maxlen=LOOKBACK_WINDOW_SIZE)
+        ROC_10 = deque(maxlen=LOOKBACK_WINDOW_SIZE)
+        FI_10 = deque(maxlen=LOOKBACK_WINDOW_SIZE)
+        FI_OBV_ratio10 = deque(maxlen=LOOKBACK_WINDOW_SIZE)
+
 
         bladeq = deque(maxlen=LOOKBACK_WINDOW_SIZE)
         netdeq = deque(maxlen=LOOKBACK_WINDOW_SIZE)
@@ -68,12 +93,39 @@ class StockTradingEnv(gym.Env):
         costdeq = deque(maxlen=LOOKBACK_WINDOW_SIZE)
         totaldeq = deque(maxlen=LOOKBACK_WINDOW_SIZE)
 
+
+
         opendeq.append(self.df.loc[self.current_step, 'Open'] / MAX_SHARE_PRICE)
         highdeq.append(self.df.loc[self.current_step, 'High'] / MAX_SHARE_PRICE)
         lowdeq.append(self.df.loc[self.current_step, 'Low'] / MAX_SHARE_PRICE)
         closedeq.append(self.df.loc[self.current_step, 'Close'] / MAX_SHARE_PRICE)
         ajdeq.append(self.df.loc[self.current_step, 'Adj Close'] / MAX_SHARE_PRICE)
         voldeq.append(self.df.loc[self.current_step, 'Volume'] / MAX_SHARE_PRICE)
+
+        # log_OBV.append(self.df.loc[self.current_step,'log_OBV'])
+        close_ma10.append(self.df.loc[self.current_step,'close_ma10'])
+        volume_ma10.append(self.df.loc[self.current_step,'volume_ma10'])
+        close_ma10_ratio.append(self.df.loc[self.current_step,'close_ma10_ratio'])
+        volume_ma10_ratio.append(self.df.loc[self.current_step,'volume_ma10_ratio'])
+        PDI_10.append(self.df.loc[self.current_step,'PDI_10'])
+        MDI_10.append(self.df.loc[self.current_step,'MDI_10'])
+        ADX_10.append(self.df.loc[self.current_step,'ADX_10'])
+        MDI_ADX_ratio10.append(self.df.loc[self.current_step,'MDI_ADX_ratio10'])
+        PDI_ADX_ratio10.append(self.df.loc[self.current_step,'PDI_ADX_ratio10'])
+        Bol_upper_10.append(self.df.loc[self.current_step,'Bol_upper_10'])
+        Bol_lower_10.append(self.df.loc[self.current_step,'Bol_lower_10'])
+        Bol_upper_close_ratio10.append(self.df.loc[self.current_step,'Bol_upper_close_ratio10'])
+        # Bol_lower_close_ratio10.append(self.df.loc[self.current_step,'Bol_lower_close_ratio10'])
+        RSI_MACD_10.append(self.df.loc[self.current_step,'RSI_MACD_10'])
+        CCI_10.append(self.df.loc[self.current_step,'CCI_10'])
+        EVM_10.append(self.df.loc[self.current_step,'EVM_10'])
+        EWMA_10.append(self.df.loc[self.current_step,'EWMA_10'])
+        EWMA_SMA_ratio10.append(self.df.loc[self.current_step,'EWMA_SMA_ratio10'])
+        ROC_10.append(self.df.loc[self.current_step,'ROC_10'])
+        FI_10.append(self.df.loc[self.current_step,'FI_10'])
+        FI_OBV_ratio10.append(self.df.loc[self.current_step,'FI_OBV_ratio10'])
+
+
         bladeq.append(self.balance / MAX_ACCOUNT_BALANCE)
         netdeq.append(self.max_net_worth / MAX_ACCOUNT_BALANCE)
         shadeq.append(self.shares_held / MAX_NUM_SHARES)
@@ -81,7 +133,11 @@ class StockTradingEnv(gym.Env):
         totaldeq.append(self.total_sales_value / (MAX_NUM_SHARES * MAX_SHARE_PRICE))
 
         if self.current_step > LOOKBACK_WINDOW_SIZE:
-            obs = np.array([opendeq, highdeq, lowdeq, closedeq, ajdeq, voldeq, bladeq, netdeq, shadeq, costdeq, totaldeq])
+            obs = np.array([opendeq, highdeq, lowdeq, closedeq, close_ma10 , volume_ma10 ,
+            close_ma10_ratio , volume_ma10_ratio , PDI_10 , MDI_10 , ADX_10 , MDI_ADX_ratio10 , PDI_ADX_ratio10 ,
+            Bol_upper_10 , Bol_lower_10 , Bol_upper_close_ratio10 , RSI_MACD_10 , CCI_10 ,
+            EVM_10 , EWMA_10 , EWMA_SMA_ratio10 , ROC_10 , FI_10 ,
+            FI_OBV_ratio10 , ajdeq, voldeq, bladeq, netdeq, shadeq, costdeq, totaldeq])
             return obs
         return frame
 
