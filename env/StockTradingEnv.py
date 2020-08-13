@@ -12,10 +12,7 @@ MAX_ACCOUNT_BALANCE = 2147483647
 MAX_NUM_SHARES = 2147483647
 MAX_SHARE_PRICE = 5000
 MAX_OPEN_POSITIONS = 5
-
-
 INITIAL_ACCOUNT_BALANCE = 10000
-
 LOOKBACK_WINDOW_SIZE = 10
 
 
@@ -64,7 +61,7 @@ class StockTradingEnv(gym.Env):
         ajdeq = deque(maxlen=LOOKBACK_WINDOW_SIZE)
         voldeq = deque(maxlen=LOOKBACK_WINDOW_SIZE)
 
-        
+
         bladeq = deque(maxlen=LOOKBACK_WINDOW_SIZE)
         netdeq = deque(maxlen=LOOKBACK_WINDOW_SIZE)
         shadeq = deque(maxlen=LOOKBACK_WINDOW_SIZE)

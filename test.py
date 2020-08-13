@@ -11,7 +11,7 @@ from env.get_fundamental import getFundament
 
 import pandas as pd
 
-from data_manager import *
+from ml.data_manager import *
 
 # model = PPO2.load("./model/stock_RL2")
 

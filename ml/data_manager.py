@@ -1,7 +1,7 @@
 import pandas as pd
 import numpy as np
 import pandas_datareader as pdr
-import indicator
+import ml.indicator
 import datetime
 
 now = datetime.datetime.now()
