@@ -63,6 +63,8 @@ class StockTradingEnv(gym.Env):
         closedeq = deque(maxlen=LOOKBACK_WINDOW_SIZE)
         ajdeq = deque(maxlen=LOOKBACK_WINDOW_SIZE)
         voldeq = deque(maxlen=LOOKBACK_WINDOW_SIZE)
+
+        
         bladeq = deque(maxlen=LOOKBACK_WINDOW_SIZE)
         netdeq = deque(maxlen=LOOKBACK_WINDOW_SIZE)
         shadeq = deque(maxlen=LOOKBACK_WINDOW_SIZE)
@@ -138,15 +140,16 @@ class StockTradingEnv(gym.Env):
     def step(self, action):
         # Execute one time step within the environment
         self._take_action(action)
+        date = self.df.loc[self.current_step, 'Date']
 
         self.current_step += 1
         if self.current_step > self.df.index[-1]:
-            self.current_step = self.df.index[-1]
+            self.current_step = self.current_step - 1
 
         delay_modifier = (self.current_step / self.MAX_STEPS)
 
         reward = self.balance * delay_modifier + self.current_step
-        done = self.net_worth <= 0 or self.current_step >= len(self.df)
+        done = self.net_worth <= 0 or self.current_step == len(self.df) 
 
         obs = self._next_observation()
 
@@ -154,10 +157,10 @@ class StockTradingEnv(gym.Env):
         trade = self.trades
         if len(trade) > 0:
             tra = trade[-1]['type']
-            date = self.df['Date'].values[trade[-1]['step']]
+            date = self.df.loc[self.current_step, 'Date']
         else:
             tra = None
-            date = None
+            date = self.df.loc[self.current_step, 'Date']
 
         net = self.net_worth
 
