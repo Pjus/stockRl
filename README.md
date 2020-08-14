@@ -11,3 +11,4 @@ stock reinforcement, flask web service
 7. flask 앱으로 구동
 8. goorm ide로 웹 
 ## 기술
+*참조 사이트 : https://towardsdatascience.com/creating-a-custom-openai-gym-environment-for-stock-trading-be532be3910e
