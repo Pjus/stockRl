@@ -26,18 +26,18 @@ def preprocess(data, ver='v1'):
     for window in windows:
         data['close_ma{}'.format(window)] = data['Close'].rolling(window).mean()
         data['volume_ma{}'.format(window)] = data['Volume'].rolling(window).mean()
-        data['close_ma%d_ratio' % window] = (data['Close'] - data['close_ma%d' % window]) / data['close_ma%d' % window]
-        data['volume_ma%d_ratio' % window] = (data['Volume'] - data['volume_ma%d' % window]) / data['volume_ma%d' % window]
+        # data['close_ma%d_ratio' % window] = (data['Close'] - data['close_ma%d' % window]) / data['close_ma%d' % window]
+        # data['volume_ma%d_ratio' % window] = (data['Volume'] - data['volume_ma%d' % window]) / data['volume_ma%d' % window]
 
         # DMI PMI ADX
         data = indicator.DMI(data, n=window, n_ADX=window)
-        data['MDI_ADX_ratio{}'.format(window)] = data['MDI_{}'.format(window)] / data['ADX_{}'.format(window)]
-        data['PDI_ADX_ratio{}'.format(window)] = data['PDI_{}'.format(window)] / data['ADX_{}'.format(window)]
+        # data['MDI_ADX_ratio{}'.format(window)] = data['MDI_{}'.format(window)] / data['ADX_{}'.format(window)]
+        # data['PDI_ADX_ratio{}'.format(window)] = data['PDI_{}'.format(window)] / data['ADX_{}'.format(window)]
         
         # Bollinger Band
         data = indicator.fnBolingerBand(data, window)
-        data['Bol_upper_close_ratio{}'.format(window)] = data['Bol_upper_{}'.format(window)] / data['close_ma{}'.format(window)]
-        data['Bol_lower_close_ratio{}'.format(window)] = data['Bol_lower_{}'.format(window)] / data['close_ma{}'.format(window)]
+        # data['Bol_upper_close_ratio{}'.format(window)] = data['Bol_upper_{}'.format(window)] / data['close_ma{}'.format(window)]
+        # data['Bol_lower_close_ratio{}'.format(window)] = data['Bol_lower_{}'.format(window)] / data['close_ma{}'.format(window)]
         
         # RSI
         data = indicator.fnRSI(data, window)
@@ -47,12 +47,12 @@ def preprocess(data, ver='v1'):
         data = indicator.EVM(data, window)
         # EWMA
         data = indicator.EWMA(data, window)
-        data['EWMA_SMA_ratio{}'.format(window)] = data['EWMA_{}'.format(window)] / data['close_ma{}'.format(window)]
+        # data['EWMA_SMA_ratio{}'.format(window)] = data['EWMA_{}'.format(window)] / data['close_ma{}'.format(window)]
         # ROC
         data = indicator.ROC(data, window)
         # forceindex
         data = indicator.ForceIndex(data, window)
-        data['FI_OBV_ratio{}'.format(window)] = data['FI_{}'.format(window)] / data['OBV']
+        # data['FI_OBV_ratio{}'.format(window)] = data['FI_{}'.format(window)] / data['OBV']
 
     data.dropna(inplace=True)
 

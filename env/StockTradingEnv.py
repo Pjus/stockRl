@@ -12,7 +12,10 @@ MAX_ACCOUNT_BALANCE = 2147483647
 MAX_NUM_SHARES = 2147483647
 MAX_SHARE_PRICE = 5000
 MAX_OPEN_POSITIONS = 5
+
+
 INITIAL_ACCOUNT_BALANCE = 10000
+
 LOOKBACK_WINDOW_SIZE = 10
 
 
@@ -38,7 +41,7 @@ class StockTradingEnv(gym.Env):
 
         # Prices contains the OHCL values for the last five prices
         self.observation_space = spaces.Box(
-            low=0, high=1, shape=(len(self.df.columns) + 2, LOOKBACK_WINDOW_SIZE), dtype=np.float16)
+            low=0, high=1, shape=(len(self.df.columns), LOOKBACK_WINDOW_SIZE), dtype=np.float16)
 
     def _adjust_prices(self, df):
         adjust_ratio = df['Adj Close'] / df['Close']
@@ -52,7 +55,7 @@ class StockTradingEnv(gym.Env):
 
     def _next_observation(self):
 
-        frame = np.zeros((len(self.df.columns) + 2, LOOKBACK_WINDOW_SIZE))
+        frame = np.zeros((len(self.df.columns), LOOKBACK_WINDOW_SIZE))
 
         opendeq = deque(maxlen=LOOKBACK_WINDOW_SIZE)
         highdeq = deque(maxlen=LOOKBACK_WINDOW_SIZE)
@@ -60,9 +63,13 @@ class StockTradingEnv(gym.Env):
         closedeq = deque(maxlen=LOOKBACK_WINDOW_SIZE)
         ajdeq = deque(maxlen=LOOKBACK_WINDOW_SIZE)
         voldeq = deque(maxlen=LOOKBACK_WINDOW_SIZE)
-
+        bladeq = deque(maxlen=LOOKBACK_WINDOW_SIZE)
+        netdeq = deque(maxlen=LOOKBACK_WINDOW_SIZE)
+        shadeq = deque(maxlen=LOOKBACK_WINDOW_SIZE)
+        costdeq = deque(maxlen=LOOKBACK_WINDOW_SIZE)
+        totaldeq = deque(maxlen=LOOKBACK_WINDOW_SIZE)
+    
         # indicator deque
-
         log_OBV = deque(maxlen=LOOKBACK_WINDOW_SIZE)
         close_ma10 = deque(maxlen=LOOKBACK_WINDOW_SIZE)
         volume_ma10 = deque(maxlen=LOOKBACK_WINDOW_SIZE)
@@ -85,15 +92,7 @@ class StockTradingEnv(gym.Env):
         ROC_10 = deque(maxlen=LOOKBACK_WINDOW_SIZE)
         FI_10 = deque(maxlen=LOOKBACK_WINDOW_SIZE)
         FI_OBV_ratio10 = deque(maxlen=LOOKBACK_WINDOW_SIZE)
-
-
-        bladeq = deque(maxlen=LOOKBACK_WINDOW_SIZE)
-        netdeq = deque(maxlen=LOOKBACK_WINDOW_SIZE)
-        shadeq = deque(maxlen=LOOKBACK_WINDOW_SIZE)
-        costdeq = deque(maxlen=LOOKBACK_WINDOW_SIZE)
-        totaldeq = deque(maxlen=LOOKBACK_WINDOW_SIZE)
-
-
+        
 
         opendeq.append(self.df.loc[self.current_step, 'Open'] / MAX_SHARE_PRICE)
         highdeq.append(self.df.loc[self.current_step, 'High'] / MAX_SHARE_PRICE)
@@ -101,31 +100,32 @@ class StockTradingEnv(gym.Env):
         closedeq.append(self.df.loc[self.current_step, 'Close'] / MAX_SHARE_PRICE)
         ajdeq.append(self.df.loc[self.current_step, 'Adj Close'] / MAX_SHARE_PRICE)
         voldeq.append(self.df.loc[self.current_step, 'Volume'] / MAX_SHARE_PRICE)
-
+        
+                # 1 2 3 4 5 6 7 8 9 10 11 12 13 14
         # log_OBV.append(self.df.loc[self.current_step,'log_OBV'])
         close_ma10.append(self.df.loc[self.current_step,'close_ma10'])
         volume_ma10.append(self.df.loc[self.current_step,'volume_ma10'])
-        close_ma10_ratio.append(self.df.loc[self.current_step,'close_ma10_ratio'])
-        volume_ma10_ratio.append(self.df.loc[self.current_step,'volume_ma10_ratio'])
+        # close_ma10_ratio.append(self.df.loc[self.current_step,'close_ma10_ratio'])
+        # volume_ma10_ratio.append(self.df.loc[self.current_step,'volume_ma10_ratio'])
         PDI_10.append(self.df.loc[self.current_step,'PDI_10'])
         MDI_10.append(self.df.loc[self.current_step,'MDI_10'])
         ADX_10.append(self.df.loc[self.current_step,'ADX_10'])
-        MDI_ADX_ratio10.append(self.df.loc[self.current_step,'MDI_ADX_ratio10'])
-        PDI_ADX_ratio10.append(self.df.loc[self.current_step,'PDI_ADX_ratio10'])
+        # MDI_ADX_ratio10.append(self.df.loc[self.current_step,'MDI_ADX_ratio10'])
+        # PDI_ADX_ratio10.append(self.df.loc[self.current_step,'PDI_ADX_ratio10'])
         Bol_upper_10.append(self.df.loc[self.current_step,'Bol_upper_10'])
         Bol_lower_10.append(self.df.loc[self.current_step,'Bol_lower_10'])
-        Bol_upper_close_ratio10.append(self.df.loc[self.current_step,'Bol_upper_close_ratio10'])
+        # Bol_upper_close_ratio10.append(self.df.loc[self.current_step,'Bol_upper_close_ratio10'])
         # Bol_lower_close_ratio10.append(self.df.loc[self.current_step,'Bol_lower_close_ratio10'])
         RSI_MACD_10.append(self.df.loc[self.current_step,'RSI_MACD_10'])
         CCI_10.append(self.df.loc[self.current_step,'CCI_10'])
         EVM_10.append(self.df.loc[self.current_step,'EVM_10'])
         EWMA_10.append(self.df.loc[self.current_step,'EWMA_10'])
-        EWMA_SMA_ratio10.append(self.df.loc[self.current_step,'EWMA_SMA_ratio10'])
+        # EWMA_SMA_ratio10.append(self.df.loc[self.current_step,'EWMA_SMA_ratio10'])
         ROC_10.append(self.df.loc[self.current_step,'ROC_10'])
-        FI_10.append(self.df.loc[self.current_step,'FI_10'])
-        FI_OBV_ratio10.append(self.df.loc[self.current_step,'FI_OBV_ratio10'])
-
-
+        # FI_10.append(self.df.loc[self.current_step,'FI_10'])
+        # FI_OBV_ratio10.append(self.df.loc[self.current_step,'FI_OBV_ratio10'])
+        
+        
         bladeq.append(self.balance / MAX_ACCOUNT_BALANCE)
         netdeq.append(self.max_net_worth / MAX_ACCOUNT_BALANCE)
         shadeq.append(self.shares_held / MAX_NUM_SHARES)
@@ -133,11 +133,10 @@ class StockTradingEnv(gym.Env):
         totaldeq.append(self.total_sales_value / (MAX_NUM_SHARES * MAX_SHARE_PRICE))
 
         if self.current_step > LOOKBACK_WINDOW_SIZE:
-            obs = np.array([opendeq, highdeq, lowdeq, closedeq, close_ma10 , volume_ma10 ,
-            close_ma10_ratio , volume_ma10_ratio , PDI_10 , MDI_10 , ADX_10 , MDI_ADX_ratio10 , PDI_ADX_ratio10 ,
-            Bol_upper_10 , Bol_lower_10 , Bol_upper_close_ratio10 , RSI_MACD_10 , CCI_10 ,
-            EVM_10 , EWMA_10 , EWMA_SMA_ratio10 , ROC_10 , FI_10 ,
-            FI_OBV_ratio10 , ajdeq, voldeq, bladeq, netdeq, shadeq, costdeq, totaldeq])
+            # 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24
+            obs = np.array([opendeq, highdeq, lowdeq, closedeq, ajdeq, voldeq, 
+            PDI_10 , MDI_10 , ADX_10 , Bol_upper_10 , Bol_lower_10 , RSI_MACD_10 , CCI_10 , EVM_10 , EWMA_10, ROC_10 ,  
+            bladeq, netdeq, shadeq, costdeq, totaldeq])
             return obs
         return frame
 
@@ -162,11 +161,11 @@ class StockTradingEnv(gym.Env):
 
             if shares_bought > 0:
                 self.trades.append({'step': self.current_step,
-                                    'shares': shares_bought, 'total': additional_cost,
+                                    'shares': shares_bought, 'total': additional_cost, 'price': current_price, 
                                     'type': "Buy"})
             else:
                 self.trades.append({'step': self.current_step,
-                                    'shares': 0, 'total': 0,
+                                    'shares': 0, 'total': 0, 'price': 0, 
                                     'type': "Hold"})
 
         elif action_type < 2:
@@ -179,7 +178,7 @@ class StockTradingEnv(gym.Env):
 
             if shares_sold > 0:
                 self.trades.append({'step': self.current_step,
-                                    'shares': shares_sold, 'total': shares_sold * current_price,
+                                    'shares': shares_sold, 'total': shares_sold * current_price, 'price': current_price,
                                     'type': "Sell"})
 
         self.net_worth = self.balance + self.shares_held * current_price
@@ -206,18 +205,23 @@ class StockTradingEnv(gym.Env):
 
         obs = self._next_observation()
 
-        
         trade = self.trades
         if len(trade) > 0:
             tra = trade[-1]['type']
+            num_share = trade[-1]['shares']
+            price = trade[-1]['price']
             date = self.df.loc[self.current_step, 'Date']
         else:
-            tra = None
+            tra = 0
+            num_share = 0
+            price = 0
             date = self.df.loc[self.current_step, 'Date']
 
+        bal = self.balance
+        shares = self.shares_held
         net = self.net_worth
 
-        return obs, reward, done, {"date" : date, "trade" : tra, 'Net_worth' : net}
+        return obs, reward, done, {'date' : date, 'trade' : tra, 'num_share' : num_share, 'price':price, 'balance' : bal, 'shares' : shares, 'net': net, }
 
     def reset(self):
         # Reset the state of the environment to an initial state
