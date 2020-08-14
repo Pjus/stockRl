@@ -1,6 +1,6 @@
 # stockRl
 stock reinforcement, flask web service
-강화학습을 이용한 주식 매매 행동 결정 & 백트레이딩
+강화학습을 이용한 주식 매매 행동 어드바이저
 ## 전체 과정
 1. 주식 데이터 수집 yahoo finance (pandas_datareader)
 2. 인디케이터 계산
