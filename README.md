@@ -19,4 +19,4 @@ stock reinforcement, flask web service
 4. 
 ## 결과
 ![profit](/./results/profit.png)
-
+![profit](/./results/test.png)
