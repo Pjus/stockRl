@@ -15,6 +15,7 @@ stock reinforcement, flask web service
 * 참조 사이트 : https://towardsdatascience.com/creating-a-custom-openai-gym-environment-for-stock-trading-be532be3910e
 1. gym custom environment 구성
 2. 
+## 결과
 ![Test](/./test.png)
 
 
