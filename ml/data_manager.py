@@ -40,18 +40,18 @@ def preprocess(data, ver='v1'):
         # data['Bol_lower_close_ratio{}'.format(window)] = data['Bol_lower_{}'.format(window)] / data['close_ma{}'.format(window)]
         
         # RSI
-        data = indicator.fnRSI(data, window)
+        # data = indicator.fnRSI(data, window)
         # CCI
-        data = indicator.CCI(data, window)
+        # data = indicator.CCI(data, window)
         # EVM
-        data = indicator.EVM(data, window)
+        # data = indicator.EVM(data, window)
         # EWMA
-        data = indicator.EWMA(data, window)
+        # data = indicator.EWMA(data, window)
         # data['EWMA_SMA_ratio{}'.format(window)] = data['EWMA_{}'.format(window)] / data['close_ma{}'.format(window)]
         # ROC
-        data = indicator.ROC(data, window)
+        # data = indicator.ROC(data, window)
         # forceindex
-        data = indicator.ForceIndex(data, window)
+        # data = indicator.ForceIndex(data, window)
         # data['FI_OBV_ratio{}'.format(window)] = data['FI_{}'.format(window)] / data['OBV']
 
     data.dropna(inplace=True)

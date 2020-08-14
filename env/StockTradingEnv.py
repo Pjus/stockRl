@@ -8,8 +8,8 @@ from collections import deque
 
 from render.StockTradingGraph import StockTradingGraph
 
-MAX_ACCOUNT_BALANCE = 2147483647
-MAX_NUM_SHARES = 2147483647
+MAX_ACCOUNT_BALANCE = 100000000
+MAX_NUM_SHARES = 100000000
 MAX_SHARE_PRICE = 5000
 MAX_OPEN_POSITIONS = 5
 
@@ -41,7 +41,7 @@ class StockTradingEnv(gym.Env):
 
         # Prices contains the OHCL values for the last five prices
         self.observation_space = spaces.Box(
-            low=0, high=1, shape=(len(self.df.columns), LOOKBACK_WINDOW_SIZE), dtype=np.float16)
+            low=0, high=1, shape=(len(self.df.columns)+1, LOOKBACK_WINDOW_SIZE), dtype=np.float16)
 
     def _adjust_prices(self, df):
         adjust_ratio = df['Adj Close'] / df['Close']
@@ -55,7 +55,7 @@ class StockTradingEnv(gym.Env):
 
     def _next_observation(self):
 
-        frame = np.zeros((len(self.df.columns), LOOKBACK_WINDOW_SIZE))
+        frame = np.zeros((len(self.df.columns)+1, LOOKBACK_WINDOW_SIZE))
 
         opendeq = deque(maxlen=LOOKBACK_WINDOW_SIZE)
         highdeq = deque(maxlen=LOOKBACK_WINDOW_SIZE)
@@ -103,25 +103,25 @@ class StockTradingEnv(gym.Env):
         
                 # 1 2 3 4 5 6 7 8 9 10 11 12 13 14
         # log_OBV.append(self.df.loc[self.current_step,'log_OBV'])
-        close_ma10.append(self.df.loc[self.current_step,'close_ma10'])
-        volume_ma10.append(self.df.loc[self.current_step,'volume_ma10'])
+        close_ma10.append(self.df.loc[self.current_step,'close_ma10'] / MAX_SHARE_PRICE)
+        volume_ma10.append(self.df.loc[self.current_step,'volume_ma10'] / MAX_SHARE_PRICE)
         # close_ma10_ratio.append(self.df.loc[self.current_step,'close_ma10_ratio'])
         # volume_ma10_ratio.append(self.df.loc[self.current_step,'volume_ma10_ratio'])
-        PDI_10.append(self.df.loc[self.current_step,'PDI_10'])
-        MDI_10.append(self.df.loc[self.current_step,'MDI_10'])
-        ADX_10.append(self.df.loc[self.current_step,'ADX_10'])
+        PDI_10.append(self.df.loc[self.current_step,'PDI_10'] / 10)
+        MDI_10.append(self.df.loc[self.current_step,'MDI_10'] / 10)
+        ADX_10.append(self.df.loc[self.current_step,'ADX_10'] / 10)
         # MDI_ADX_ratio10.append(self.df.loc[self.current_step,'MDI_ADX_ratio10'])
         # PDI_ADX_ratio10.append(self.df.loc[self.current_step,'PDI_ADX_ratio10'])
-        Bol_upper_10.append(self.df.loc[self.current_step,'Bol_upper_10'])
-        Bol_lower_10.append(self.df.loc[self.current_step,'Bol_lower_10'])
+        Bol_upper_10.append(self.df.loc[self.current_step,'Bol_upper_10'] / MAX_SHARE_PRICE)
+        Bol_lower_10.append(self.df.loc[self.current_step,'Bol_lower_10'] / MAX_SHARE_PRICE)
         # Bol_upper_close_ratio10.append(self.df.loc[self.current_step,'Bol_upper_close_ratio10'])
         # Bol_lower_close_ratio10.append(self.df.loc[self.current_step,'Bol_lower_close_ratio10'])
-        RSI_MACD_10.append(self.df.loc[self.current_step,'RSI_MACD_10'])
-        CCI_10.append(self.df.loc[self.current_step,'CCI_10'])
-        EVM_10.append(self.df.loc[self.current_step,'EVM_10'])
-        EWMA_10.append(self.df.loc[self.current_step,'EWMA_10'])
+        # RSI_MACD_10.append(self.df.loc[self.current_step,'RSI_MACD_10'])
+        # CCI_10.append(self.df.loc[self.current_step,'CCI_10'])
+        # EVM_10.append(self.df.loc[self.current_step,'EVM_10'])
+        # EWMA_10.append(self.df.loc[self.current_step,'EWMA_10'])
         # EWMA_SMA_ratio10.append(self.df.loc[self.current_step,'EWMA_SMA_ratio10'])
-        ROC_10.append(self.df.loc[self.current_step,'ROC_10'])
+        # ROC_10.append(self.df.loc[self.current_step,'ROC_10'])
         # FI_10.append(self.df.loc[self.current_step,'FI_10'])
         # FI_OBV_ratio10.append(self.df.loc[self.current_step,'FI_OBV_ratio10'])
         
@@ -135,7 +135,7 @@ class StockTradingEnv(gym.Env):
         if self.current_step > LOOKBACK_WINDOW_SIZE:
             # 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24
             obs = np.array([opendeq, highdeq, lowdeq, closedeq, ajdeq, voldeq, 
-            PDI_10 , MDI_10 , ADX_10 , Bol_upper_10 , Bol_lower_10 , RSI_MACD_10 , CCI_10 , EVM_10 , EWMA_10, ROC_10 ,  
+            PDI_10 , MDI_10 , ADX_10 , Bol_upper_10 , Bol_lower_10 ,          # PDI_10 , MDI_10 , ADX_10 , Bol_upper_10 , Bol_lower_10 , RSI_MACD_10 , CCI_10 , EVM_10 , EWMA_10, ROC_10 ,  
             bladeq, netdeq, shadeq, costdeq, totaldeq])
             return obs
         return frame
@@ -165,7 +165,7 @@ class StockTradingEnv(gym.Env):
                                     'type': "Buy"})
             else:
                 self.trades.append({'step': self.current_step,
-                                    'shares': 0, 'total': 0, 'price': 0, 
+                                    'shares': 0, 'total': 0, 'price': current_price, 
                                     'type': "Hold"})
 
         elif action_type < 2:
