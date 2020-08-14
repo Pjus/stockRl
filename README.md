@@ -1,2 +1,7 @@
 # stockRl
-stock reinforcement, flask
+stock reinforcement, flask web service
+
+## 과정
+
+
+## 기술
