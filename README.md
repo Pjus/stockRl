@@ -18,6 +18,5 @@ stock reinforcement, flask web service
 3. MLP, LSTM 딥러닝 모델 사용
 4. 
 ## 결과
-![Test](/./test.png)
-
-
+![profit](/./results/profit.png)
+![profit](/./results/test.png)
